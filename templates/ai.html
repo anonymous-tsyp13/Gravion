@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}AI Decisions - Hybrid Renewable Energy Monitor{% endblock %}
+
+{% block page_title %}AI Decision System{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- AI Overview Card -->
+        <div class="col-md-4">
+            <div class="card ai-card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">🤖 AI System Overview</h5>
+                    <div class="ai-stats">
+                        <p>Current Status: <span class="badge bg-success">Active</span></p>
+                        <p>Last Decision: <span id="lastDecisionTime">{{ decisions[0].timestamp }}</span></p>
+                        <p>Decision Confidence: <span id="confidenceLevel">95%</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Decisions Table -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Recent AI Decisions</h5>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Decision</th>
+                                    <th>Valve Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for decision in decisions %}
+                                <tr>
+                                    <td>{{ decision.timestamp }}</td>
+                                    <td>{{ decision.decision }}</td>
+                                    <td>
+                                        <span class="badge {% if decision.valve_status %}bg-success{% else %}bg-danger{% endif %}">
+                                            {{ "Open" if decision.valve_status else "Closed" }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!-- Decision Metrics -->
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Decision Metrics</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <canvas id="decisionPieChart"></canvas>
+                        </div>
+                        <div class="col-md-6">
+                            <canvas id="valveUsageChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Integration Notes -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">💡 Integration Notes</h5>
+                    <div class="alert alert-info">
+                        <h6>Future AI Model Integration</h6>
+                        <ul>
+                            <li>Replace mock decision logic with trained ML model</li>
+                            <li>Add real weather API integration for accurate forecasting</li>
+                            <li>Implement actual sensor data processing</li>
+                            <li>Add model retraining pipeline based on performance metrics</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Calculate decision statistics
+const decisions = {{ decisions|tojson|safe }};
+const valveOpenCount = decisions.filter(d => d.valve_status).length;
+const valveClosedCount = decisions.length - valveOpenCount;
+
+// Initialize the decision distribution pie chart
+const pieCtx = document.getElementById('decisionPieChart').getContext('2d');
+new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+        labels: ['Valve Open', 'Valve Closed'],
+        datasets: [{
+            data: [valveOpenCount, valveClosedCount],
+            backgroundColor: ['#28a745', '#dc3545']
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    color: '#b3b3b3'
+                }
+            },
+            title: {
+                display: true,
+                text: 'Valve Operation Distribution',
+                color: '#b3b3b3'
+            }
+        }
+    }
+});
+
+// Initialize the valve usage timeline chart
+const usageCtx = document.getElementById('valveUsageChart').getContext('2d');
+new Chart(usageCtx, {
+    type: 'bar',
+    data: {
+        labels: decisions.map(d => d.timestamp).reverse(),
+        datasets: [{
+            label: 'Valve Status',
+            data: decisions.map(d => d.valve_status ? 1 : 0).reverse(),
+            backgroundColor: decisions.map(d => d.valve_status ? '#28a745' : '#dc3545').reverse()
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 1,
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.1)'
+                },
+                ticks: {
+                    color: '#b3b3b3',
+                    callback: value => value === 0 ? 'Closed' : 'Open'
+                }
+            },
+            x: {
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.1)'
+                },
+                ticks: {
+                    color: '#b3b3b3'
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            title: {
+                display: true,
+                text: 'Valve Status Timeline',
+                color: '#b3b3b3'
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

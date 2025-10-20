@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Weather Forecast - Hybrid Renewable Energy Monitor{% endblock %}
+
+{% block page_title %}Weather Forecast{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">24-Hour Weather Forecast</h5>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Condition</th>
+                                    <th>Temperature (°C)</th>
+                                    <th>Wind Speed (m/s)</th>
+                                    <th>Solar Irradiance (W/m²)</th>
+                                    <th>Humidity (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for forecast in forecasts %}
+                                <tr>
+                                    <td>{{ forecast.time }}</td>
+                                    <td>{{ forecast.condition }}</td>
+                                    <td>{{ forecast.temperature }}</td>
+                                    <td>{{ forecast.wind_speed }}</td>
+                                    <td>{{ forecast.solar_irradiance }}</td>
+                                    <td>{{ forecast.humidity }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Forecast Trends</h5>
+                    <canvas id="forecastChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize the forecast trends chart
+const ctx = document.getElementById('forecastChart').getContext('2d');
+const forecastData = {
+    labels: [{% for forecast in forecasts %}'{{ forecast.time }}',{% endfor %}],
+    temperature: [{% for forecast in forecasts %}{{ forecast.temperature }},{% endfor %}],
+    windSpeed: [{% for forecast in forecasts %}{{ forecast.wind_speed }},{% endfor %}],
+    solarIrradiance: [{% for forecast in forecasts %}{{ forecast.solar_irradiance }},{% endfor %}],
+    humidity: [{% for forecast in forecasts %}{{ forecast.humidity }},{% endfor %}]
+};
+
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: forecastData.labels,
+        datasets: [
+            {
+                label: 'Temperature (°C)',
+                data: forecastData.temperature,
+                borderColor: '#ff8f00',
+                tension: 0.4
+            },
+            {
+                label: 'Wind Speed (m/s)',
+                data: forecastData.windSpeed,
+                borderColor: '#00bcd4',
+                tension: 0.4
+            },
+            {
+                label: 'Solar Irradiance (W/m²)',
+                data: forecastData.solarIrradiance,
+                borderColor: '#4caf50',
+                tension: 0.4,
+                yAxisID: 'irradiance'
+            },
+            {
+                label: 'Humidity (%)',
+                data: forecastData.humidity,
+                borderColor: '#7c4dff',
+                tension: 0.4
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.1)'
+                },
+                ticks: {
+                    color: '#b3b3b3'
+                }
+            },
+            irradiance: {
+                position: 'right',
+                beginAtZero: true,
+                grid: {
+                    display: false
+                },
+                ticks: {
+                    color: '#b3b3b3'
+                }
+            },
+            x: {
+                grid: {
+                    color: 'rgba(255, 255, 255, 0.1)'
+                },
+                ticks: {
+                    color: '#b3b3b3'
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                labels: {
+                    color: '#b3b3b3'
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

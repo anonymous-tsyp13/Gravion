@@ -1,0 +1,271 @@
+/* Dark theme base styles */
+:root {
+    --primary-bg: #1a1a1a;
+    --secondary-bg: #2d2d2d;
+    --card-bg: #333333;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --accent-blue: #007bff;
+    --accent-green: #28a745;
+    --glow-blue: rgba(0, 123, 255, 0.15);
+    --glow-green: rgba(40, 167, 69, 0.15);
+}
+
+body.dark-theme {
+    background-color: var(--primary-bg);
+    color: var(--text-primary);
+}
+
+/* Sidebar Styles */
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background: var(--secondary-bg);
+    color: var(--text-primary);
+    transition: all 0.3s;
+    height: 100vh;
+    position: fixed;
+    padding: 20px 0;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: var(--card-bg);
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--card-bg);
+}
+
+#sidebar ul li a {
+    padding: 10px 20px;
+    display: block;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+#sidebar ul li a:hover {
+    color: var(--text-primary);
+    background: var(--card-bg);
+}
+
+#sidebar ul li.active > a {
+    color: var(--accent-blue);
+    background: var(--glow-blue);
+}
+
+/* Content Styles */
+#content {
+    margin-left: 250px;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+/* Card Styles */
+.card {
+    background: var(--card-bg);
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+/* Energy Cards */
+.energy-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.energy-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05));
+}
+
+.energy-card.solar { background: linear-gradient(135deg, #ff8f00, #ff6f00); }
+.energy-card.wind { background: linear-gradient(135deg, #00bcd4, #0097a7); }
+.energy-card.water { background: linear-gradient(135deg, #4caf50, #388e3c); }
+.energy-card.total { background: linear-gradient(135deg, #7c4dff, #512da8); }
+
+.energy-card .card-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Tank Visualization */
+.tank-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.tank {
+    width: 100px;
+    height: 200px;
+    border: 2px solid var(--text-secondary);
+    border-radius: 10px;
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.tank-level {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, #4fc3f7, #29b6f6);
+    border-radius: 0 0 8px 8px;
+    transition: height 1s ease-in-out;
+}
+
+.tank-percentage {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: -25px;
+    color: var(--text-primary);
+}
+
+.tank label {
+    position: absolute;
+    bottom: -25px;
+    width: 100%;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+/* Valve Indicator */
+.valve-indicator {
+    width: 80px;
+    height: 30px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.valve-indicator.closed {
+    background-color: #dc3545;
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.3);
+}
+
+.valve-indicator.open {
+    background-color: #28a745;
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+}
+
+/* AI Decision Box */
+.ai-card {
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+}
+
+.countdown-box {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Weather Grid */
+.weather-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.weather-item {
+    text-align: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.weather-item i {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: var(--accent-blue);
+}
+
+.weather-item span {
+    display: block;
+    font-size: 1.2rem;
+    margin: 5px 0;
+}
+
+.weather-item label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Energy Flow Diagram */
+.energy-flow-diagram {
+    height: 300px;
+    position: relative;
+}
+
+/* Energy Chart */
+#energyChart {
+    height: 200px !important;
+}
+
+/* Sensor Stream */
+.sensor-stream {
+    padding: 20px;
+    margin-top: auto;
+}
+
+.stream-data {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 0.8rem;
+    height: 150px;
+    overflow-y: auto;
+}
+
+/* Animations */
+@keyframes glow {
+    0% { box-shadow: 0 0 5px var(--glow-blue); }
+    50% { box-shadow: 0 0 20px var(--glow-blue); }
+    100% { box-shadow: 0 0 5px var(--glow-blue); }
+}
+
+.animated-glow {
+    animation: glow 2s infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -250px;
+    }
+    #content {
+        margin-left: 0;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    .weather-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

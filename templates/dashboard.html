@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Hybrid Renewable Energy Monitor{% endblock %}
+
+{% block page_title %}System Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid dashboard">
+    <!-- Energy Production Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card energy-card solar">
+                <div class="card-body">
+                    <h5 class="card-title">☀️ Solar Energy</h5>
+                    <h2 class="card-value"><span id="solarValue">{{ energy_data.solar }}</span> kW</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card energy-card wind">
+                <div class="card-body">
+                    <h5 class="card-title">🌬️ Wind Energy</h5>
+                    <h2 class="card-value"><span id="windValue">{{ energy_data.wind }}</span> kW</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card energy-card water">
+                <div class="card-body">
+                    <h5 class="card-title">💧 Water Energy</h5>
+                    <h2 class="card-value"><span id="waterValue">{{ energy_data.water }}</span> kW</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card energy-card total">
+                <div class="card-body">
+                    <h5 class="card-title">⚡ Total Output</h5>
+                    <h2 class="card-value"><span id="totalValue">{{ energy_data.solar + energy_data.wind + energy_data.water }}</span> kW</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Energy Flow Diagram -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Energy Flow Diagram</h5>
+                    <div class="energy-flow-diagram" id="energyFlowDiagram">
+                        <!-- SVG diagram will be inserted here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Water Tank Levels -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Water Tank Levels</h5>
+                    <div class="tank-container">
+                        <div class="tank upper-tank">
+                            <div class="tank-level" id="upperTankLevel" style="height: {{ tank_levels.upper }}%">
+                                <span class="tank-percentage">{{ tank_levels.upper }}%</span>
+                            </div>
+                            <label>Upper Tank</label>
+                        </div>
+                        <div class="valve-indicator {% if ai_status.valve_status %}open{% else %}closed{% endif %}" id="valveStatus">
+                            Valve {{ "Open" if ai_status.valve_status else "Closed" }}
+                        </div>
+                        <div class="tank lower-tank">
+                            <div class="tank-level" id="lowerTankLevel" style="height: {{ tank_levels.lower }}%">
+                                <span class="tank-percentage">{{ tank_levels.lower }}%</span>
+                            </div>
+                            <label>Lower Tank</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <!-- AI Prediction Box -->
+        <div class="col-md-4">
+            <div class="card ai-card">
+                <div class="card-body">
+                    <h5 class="card-title">🤖 AI Decision System</h5>
+                    <div class="ai-status">
+                        <p id="aiDecision">{{ ai_status.decision }}</p>
+                        <div class="countdown-box">
+                            Next decision in: <span id="nextDecision">{{ ai_status.next_decision }}</span>s
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weather Overview -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Current Weather Conditions</h5>
+                    <div class="weather-grid">
+                        <div class="weather-item">
+                            <i class="fas fa-thermometer-half"></i>
+                            <span id="temperature">{{ weather.temperature }}°C</span>
+                            <label>Temperature</label>
+                        </div>
+                        <div class="weather-item">
+                            <i class="fas fa-wind"></i>
+                            <span id="windSpeed">{{ weather.wind_speed }} m/s</span>
+                            <label>Wind Speed</label>
+                        </div>
+                        <div class="weather-item">
+                            <i class="fas fa-sun"></i>
+                            <span id="solarIrradiance">{{ weather.solar_irradiance }} W/m²</span>
+                            <label>Solar Irradiance</label>
+                        </div>
+                        <div class="weather-item">
+                            <i class="fas fa-tint"></i>
+                            <span id="humidity">{{ weather.humidity }}%</span>
+                            <label>Humidity</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Energy Production Graph -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Energy Production Trends</h5>
+                    <canvas id="energyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
